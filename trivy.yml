@@ -13,34 +13,34 @@ steps:
   - checkout: self
 
   - script: |
-      echo "🐳 Build de l'image Docker vulnérable"
+      echo "Build de l'image Docker vulnérable"
       docker build -t vuln-app ./app
     displayName: 'Build Docker image'
 
   - script: |
-      echo "📥 Installer Trivy"
+      echo "Installer Trivy"
       curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
       sudo mv ./bin/trivy /usr/local/bin/
     displayName: 'Install Trivy'
 
   - script: |
-      echo "📦 Scan de l'image avec Trivy (SARIF)"
+      echo "Scan de l'image avec Trivy (SARIF)"
       mkdir -p $(reportDir)
       trivy image --ignore-unfixed --severity HIGH,CRITICAL,MEDIUM --format sarif --output $(reportDir)/trivy-image.sarif vuln-app
     displayName: 'Trivy Scan: Docker Image'
 
   - script: |
-      echo "📂 Scan filesystem avec Trivy (SARIF)"
+      echo "Scan filesystem avec Trivy (SARIF)"
       trivy fs --ignore-unfixed --severity HIGH,CRITICAL,MEDIUM --format sarif --output $(reportDir)/trivy-fs.sarif ./app
     displayName: 'Trivy Scan: Filesystem'
 
   - script: |
-      echo "☁️ Scan Terraform avec Trivy (SARIF)"
+      echo "Scan Terraform avec Trivy (SARIF)"
       trivy config --severity HIGH,CRITICAL,MEDIUM --format sarif --output $(reportDir)/trivy-config.sarif ./infra
     displayName: 'Trivy Scan: Terraform (IaC)'
 
   - script: |
-      echo "🛠️ Génération de rapports HTML simplifiés depuis SARIF"
+      echo "Génération de rapports HTML simplifiés depuis SARIF"
       mkdir -p $(artifactHtmlDir)
 
       generate_html() {
@@ -57,7 +57,7 @@ steps:
     displayName: 'Convert SARIF to simplified HTML'
 
   - script: |
-      echo "📂 Vérification des fichiers HTML générés"
+      echo "Vérification des fichiers HTML générés"
       ls -alh $(artifactHtmlDir)
     displayName: 'Vérifier fichiers HTML'
 
@@ -65,29 +65,29 @@ steps:
       echo "## Résultats Trivy" > $(summaryFile)
       echo "" >> $(summaryFile)
 
-      echo "### 📂 Rapport HTML disponible en artefact **Trivy-HTML-Reports**" >> $(summaryFile)
+      echo "### Rapport HTML disponible en artefact **Trivy-HTML-Reports**" >> $(summaryFile)
       echo "" >> $(summaryFile)
 
-      echo "### 🐳 Vulnérabilités - Docker Image (Top 50)" >> $(summaryFile)
+      echo "### Vulnérabilités - Docker Image (Top 50)" >> $(summaryFile)
       jq -r '.runs[].results[:50][] | "- **" + (.ruleId // "inconnu") + "** : " + (.message.text // "aucun message")' $(reportDir)/trivy-image.sarif >> $(summaryFile)
       echo "" >> $(summaryFile)
 
-      echo "### 📁 Vulnérabilités - File System (Top 50)" >> $(summaryFile)
+      echo "### Vulnérabilités - File System (Top 50)" >> $(summaryFile)
       jq -r '.runs[].results[:50][] | "- **" + (.ruleId // "inconnu") + "** : " + (.message.text // "aucun message")' $(reportDir)/trivy-fs.sarif >> $(summaryFile)
       echo "" >> $(summaryFile)
 
-      echo "### ☁️ Vulnérabilités - Terraform Config (Top 50)" >> $(summaryFile)
+      echo "### ☁Vulnérabilités - Terraform Config (Top 50)" >> $(summaryFile)
       jq -r '.runs[].results[:50][] | "- **" + (.ruleId // "inconnu") + "** : " + (.message.text // "aucun message")' $(reportDir)/trivy-config.sarif >> $(summaryFile)
     displayName: 'Générer résumé markdown'
 
   - task: PublishBuildArtifacts@1
-    displayName: '📤 Publier rapports HTML Trivy'
+    displayName: 'Publier rapports HTML Trivy'
     inputs:
       PathtoPublish: '$(artifactHtmlDir)'
       ArtifactName: 'Trivy-HTML-Reports'
       publishLocation: 'Container'
 
   - script: |
-      echo "📎 Affichage du résumé Markdown dans la page du pipeline"
+      echo "Affichage du résumé Markdown dans la page du pipeline"
       echo "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Rapport Trivy;]$(summaryFile)"
     displayName: 'Afficher résumé dans la page du pipeline'
