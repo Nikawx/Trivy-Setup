@@ -44,20 +44,12 @@ Creating the Pipeline in Azure DevOps
 
 ### Build Docker Image
 
-yaml
-
-CopierModifier
-
 `- script: |
     echo "🐳 Building vulnerable Docker image"
     docker build -t vuln-app ./app # Change directory if needed
   displayName: 'Build Docker image'`
 
 ### 🔍 Trivy Scan: Docker Image
-
-yaml
-
-CopierModifier
 
 `- script: |
     echo " Scanning Docker image with Trivy (SARIF)"
@@ -71,10 +63,6 @@ Scans the Docker image `vuln-app` built from the `./app` directory for **HIGH**,
 
 ### Trivy Scan: Filesystem
 
-yaml
-
-CopierModifier
-
 `- script: |
     echo " Scanning filesystem with Trivy (SARIF)"
     trivy fs --ignore-unfixed --severity HIGH,CRITICAL,MEDIUM --format sarif --output $(reportDir)/trivy-fs.sarif ./app
@@ -85,10 +73,6 @@ Scans all files in `./app` for vulnerabilities. The results are saved in SARIF f
 * * * * *
 
 ### ☁️ Trivy Scan: Terraform (Infrastructure as Code)
-
-yaml
-
-CopierModifier
 
 `- script: |
     echo " Scanning Terraform configuration with Trivy (SARIF)"
@@ -114,10 +98,6 @@ To ignore specific CVEs or types of findings:
 1.  Add a `.trivyignore` file in the **root of your repository**.
 
 2.  List CVEs or ignore rules in the file.
-
-Example:
-
-CopierModifier
 
 `CVE-2021-12345
 CVE-2022-67890`
