@@ -45,7 +45,7 @@ Creating the Pipeline in Azure DevOps
 ### Build Docker Image
 
 `- script: |
-    echo "🐳 Building vulnerable Docker image"
+    echo "Building vulnerable Docker image"
     docker build -t vuln-app ./app # Change directory if needed
   displayName: 'Build Docker image'`
 
@@ -72,7 +72,7 @@ Scans all files in `./app` for vulnerabilities. The results are saved in SARIF f
 
 * * * * *
 
-### ☁️ Trivy Scan: Terraform (Infrastructure as Code)
+### Trivy Scan: Terraform (Infrastructure as Code)
 
 `- script: |
     echo " Scanning Terraform configuration with Trivy (SARIF)"
