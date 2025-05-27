@@ -72,7 +72,7 @@ Scans all files in `./app` for vulnerabilities. The results are saved in SARIF f
 
 * * * * *
 
-### Trivy Scan: Terraform (Infrastructure as Code)
+### Trivy Scan: Terraform
 
 `- script: |
     echo " Scanning Terraform configuration with Trivy (SARIF)"
@@ -99,7 +99,7 @@ To ignore specific CVEs or types of findings:
 
 2.  List CVEs or ignore rules in the file.
 
-`CVE-2021-12345
-CVE-2022-67890`
+`CVE-2021-12345`
+`CVE-2022-67890`
 
 > Trivy will skip the listed vulnerabilities during scans.
