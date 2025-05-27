@@ -49,7 +49,7 @@ Creating the Pipeline in Azure DevOps
     docker build -t vuln-app ./app # Change directory if needed
   displayName: 'Build Docker image'`
 
-### 🔍 Trivy Scan: Docker Image
+### Trivy Scan: Docker Image
 
 `- script: |
     echo " Scanning Docker image with Trivy (SARIF)"
